@@ -1,6 +1,6 @@
 package com.udemy.spring.springselenium.page.google;
 
-import com.udemy.spring.springselenium.annotation.Page;
+import com.udemy.spring.springselenium.kelvin.annotation.Page;
 import com.udemy.spring.springselenium.page.Base;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,5 +32,9 @@ public class GooglePage extends Base {
     @Override
     public boolean isLoaded() {
         return this.searchComponent.isLoaded();
+    }
+
+    public void close() {
+        this.driver.quit();
     }
 }
