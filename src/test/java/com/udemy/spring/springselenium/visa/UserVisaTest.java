@@ -1,0 +1,90 @@
+package com.udemy.spring.springselenium.visa;
+
+import com.udemy.spring.springselenium.SpringBaseTestNGTest;
+import com.udemy.spring.springselenium.entity.User;
+import com.udemy.spring.springselenium.page.visa.VisaRegistrationPage;
+import com.udemy.spring.springselenium.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.TestPropertySource;
+import org.testng.ITestContext;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import java.sql.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@TestPropertySource(properties = "app.locale=en")
+public class UserVisaTest extends SpringBaseTestNGTest {
+
+    @Autowired
+    private VisaRegistrationPage registrationPage;
+
+    @Autowired
+    private UserRepository repository;
+
+    @Test(enabled = false)
+    public void getNameByIdTest() {
+        this.repository.findById(85)
+                .ifPresent(u -> System.out.println(u.getFirstName()));
+    }
+
+    @Test(enabled = false)
+    public void visaFindByIdTest() {
+        List<User> users = this.repository.findAll()
+                .stream()
+                .limit(3)
+                .collect(Collectors.toList());
+        for (User u : users) {
+            this.registrationPage.goTo();
+            this.registrationPage.setNames(u.getFirstName(), u.getLastName());
+            this.registrationPage.setCountryFromAndTo(u.getFromCountry(), u.getToCountry());
+            this.registrationPage.setBirthDate(u.getDob().toLocalDate());
+            this.registrationPage.setContactDetails(u.getEmail(), u.getPhone());
+            this.registrationPage.setComments(u.getComments());
+            this.registrationPage.submit();
+            System.out.println(this.registrationPage.getConfirmationNumber());
+        }
+    }
+
+    @Test(enabled = false)
+    public void visaFindByFirstNameTest() {
+        List<User> users = this.repository.findByFirstNameStartingWith("Mi")
+                .stream()
+                .limit(3)
+                .collect(Collectors.toList());
+        for (User u : users) {
+            this.registrationPage.goTo();
+            this.registrationPage.setNames(u.getFirstName(), u.getLastName());
+            this.registrationPage.setCountryFromAndTo(u.getFromCountry(), u.getToCountry());
+            this.registrationPage.setBirthDate(u.getDob().toLocalDate());
+            this.registrationPage.setContactDetails(u.getEmail(), u.getPhone());
+            this.registrationPage.setComments(u.getComments());
+            this.registrationPage.submit();
+            System.out.println(this.registrationPage.getConfirmationNumber());
+        }
+    }
+
+    @Test(dataProvider = "getData")
+    public void visaFindDobBetweenDatesTest(User u) {
+        this.registrationPage.goTo();
+        this.registrationPage.setNames(u.getFirstName(), u.getLastName());
+        this.registrationPage.setCountryFromAndTo(u.getFromCountry(), u.getToCountry());
+        this.registrationPage.setBirthDate(u.getDob().toLocalDate());
+        this.registrationPage.setContactDetails(u.getEmail(), u.getPhone());
+        this.registrationPage.setComments(u.getComments());
+        this.registrationPage.submit();
+        System.out.println(this.registrationPage.getConfirmationNumber());
+    }
+
+    @DataProvider
+    public Object[] getData(ITestContext context) {
+        return this.repository.findByDobBetween(
+                Date.valueOf(context.getCurrentXmlTest().getParameter("dobFrom")),
+                Date.valueOf(context.getCurrentXmlTest().getParameter("dobTo"))
+        )
+                .stream()
+                .limit(3)
+                .toArray();
+    }
+}
