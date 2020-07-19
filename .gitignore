@@ -31,3 +31,4 @@ build/
 .vscode/
 spring-selenium.iml
 /.mvn/
+test-execution.log

@@ -4,8 +4,9 @@ import com.udemy.spring.springselenium.SpringBaseTestNGTest;
 import com.udemy.spring.springselenium.entity.User;
 import com.udemy.spring.springselenium.page.visa.VisaRegistrationPage;
 import com.udemy.spring.springselenium.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.TestPropertySource;
 import org.testng.ITestContext;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -14,8 +15,9 @@ import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@TestPropertySource(properties = "app.locale=en")
 public class UserVisaTest extends SpringBaseTestNGTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserVisaTest.class);
 
     @Autowired
     private VisaRegistrationPage registrationPage;
@@ -74,7 +76,8 @@ public class UserVisaTest extends SpringBaseTestNGTest {
         this.registrationPage.setContactDetails(u.getEmail(), u.getPhone());
         this.registrationPage.setComments(u.getComments());
         this.registrationPage.submit();
-        System.out.println(this.registrationPage.getConfirmationNumber());
+        logger.info("Request confirmation # INFO : " + this.registrationPage.getConfirmationNumber());
+        logger.warn("Request confirmation # WARN : " + this.registrationPage.getConfirmationNumber());
     }
 
     @DataProvider
