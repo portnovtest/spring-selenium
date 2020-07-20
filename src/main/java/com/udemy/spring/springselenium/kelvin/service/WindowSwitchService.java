@@ -11,13 +11,13 @@ public class WindowSwitchService {
     @Autowired
     private ApplicationContext ctx;
 
-    public void switchByTitle(final String title) {
+    public void switchByTitle(final String title) throws RuntimeException {
         WebDriver driver = this.ctx.getBean(WebDriver.class);
         driver.getWindowHandles().stream()
                 .map(handle -> driver.switchTo().window(handle).getTitle())
                 .filter(t -> t.startsWith(title))
                 .findFirst()
-                .orElseThrow(() -> {
+                .<RuntimeException>orElseThrow(() -> {
                     throw new RuntimeException("No such window");
                 });
     }

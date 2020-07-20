@@ -51,7 +51,7 @@ public class ResourceTest extends SpringBaseTestNGTest {
     @Test
     public void resourceTest3() throws IOException {
         System.out.println(
-                new String(resourceUrl.getInputStream().readAllBytes())
+                resourceUrl.getInputStream().toString()
         );
     }
 
